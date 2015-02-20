@@ -17,6 +17,7 @@ using namespace std;
 constexpr byte REG_IP = 1; // instruction pointer
 constexpr byte REG_SP = 2; // stack pointer
 constexpr byte REG_BP = 3; // stack base pointer
+constexpr byte REG_PD = 4; // page directory
 
 //flag registers
 constexpr byte REG_AM = 1; // addressing mode
@@ -122,7 +123,7 @@ struct cpu : public device
   // instruction functions (these basically map to assembly, hey easy for me to write asm then!)
 
   // register instructions
-  void mov (reg_selector src, reg_selector dest);
+  void mv  (reg_selector src, reg_selector dest);
   void ld  (reg_selector dest, byte  value);
   void ld  (reg_selector dest, dword value);
   void ld  (reg_selector dest, int   value);
@@ -134,6 +135,7 @@ struct cpu : public device
   void call       (dword address);
   void call       (reg_selector reg);
   void interupt   (byte index);
+  void ret        ();
   void cjmp       (bool eq, bool gt, dword    address);
   void cjmp       (bool eq, bool gt, reg_selector reg);
 
@@ -169,6 +171,8 @@ struct cpu : public device
   // comparison
   void cmp (reg_selector a, reg_selector b);
 
+  // interupts and error handling
+  
 };
 
 
@@ -261,7 +265,9 @@ struct pager
   pager (shared_ptr<cpu> _CPU, shared_ptr<vram> _RAM);
 
   dword translate_address(dword address);
-  
+
+  dword create_page_table();
+
 };
 
 
@@ -294,6 +300,11 @@ struct bus : public device
   dword get_dword (byte port);
   int   get_int   (byte port);
 };
+
+
+
+
+
 
 
 
