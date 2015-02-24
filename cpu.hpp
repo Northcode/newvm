@@ -1,8 +1,10 @@
 union cmp_byte
 {
   struct {
-    bool eq:1;
-    bool gt:1;
+    bool eq :1; // value to compare eq flag against
+    bool jeq:1; // wether to compare eq flag
+    bool gt :1; // value to compare gt flag against
+    bool jgt:1; // wether to compare gt flag
   };
   byte raw;
 };
@@ -43,8 +45,8 @@ struct cpu : public device
   void call       (reg_selector reg);
   void interupt   (byte index);
   void ret        ();
-  void cjmp       (bool eq, bool gt, dword    address);
-  void cjmp       (bool eq, bool gt, reg_selector reg);
+  void cjmp       (cmp_byte comparator, dword    address);
+  void cjmp       (cmp_byte comparator, reg_selector reg);
 
   // stack stuff
   void stack_push (reg_selector reg);

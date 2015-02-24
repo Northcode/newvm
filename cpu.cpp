@@ -18,6 +18,10 @@ void cpu::reset() {}
 void cpu::exec_instruction(dword address) {
   byte opcode = memory->read(address);
   switch (opcode) {
+  case 0:
+    {
+      machine->run = false;
+    }
   case 1:
     {
       reg_selector regsrc;
@@ -89,7 +93,7 @@ void cpu::exec_instruction(dword address) {
       cmp_byte byt;
       byt.raw = memory->read(address+1);
       dword addr = memory->read_dword(address+2);
-      cjmp(byt.eq,byt.gt,addr);
+      cjmp(byt,addr);
     } break;
   case 12:
     {
@@ -97,7 +101,7 @@ void cpu::exec_instruction(dword address) {
       byt.raw = memory->read(address+1);
       reg_selector reg;
       reg.raw = memory->read(address+2);
-      cjmp(byt.eq,byt.gt,reg);
+      cjmp(byt,reg);
     } break;
   case 13:
     {
@@ -339,17 +343,17 @@ void cpu::mv  (reg_selector src, reg_selector dest) {
 
 void cpu::ld  (reg_selector dest, byte  value)      {
   if(dest.reg == 0)
-    B[dest.reg] = value;
+    B[dest.index] = value;
 }
 
 void cpu::ld  (reg_selector dest, dword value)      {
   if(dest.reg == 2)
-    D[dest.reg] = value;
+    D[dest.index] = value;
 }
 
 void cpu::ld  (reg_selector dest, int   value)      {
   if(dest.reg == 1)
-    C[dest.reg] = value;
+    C[dest.index] = value;
 }
 
 void cpu::cl  (reg_selector dest)                   {
@@ -389,14 +393,15 @@ void cpu::ret        ()                                   {
   jmp(addr);
 }
 
-void cpu::cjmp       (bool eq, bool gt, dword    address) {
-  if(F[REG_EQ] == eq && F[REG_GT] == gt)
+void cpu::cjmp       (cmp_byte comparator, dword    address) {
+  if((comparator.jeq ? F[REG_EQ] == comparator.eq : true) &&
+     (comparator.jgt ? F[REG_GT] == comparator.gt : true))
     jmp(address);
 }
 
-void cpu::cjmp       (bool eq, bool gt, reg_selector reg) {
+void cpu::cjmp       (cmp_byte comparator, reg_selector reg) {
   if(reg.reg == 2)
-    cjmp(eq,gt,D[reg.index]);
+    cjmp(comparator,D[reg.index]);
 }
 
 void cpu::stack_push (reg_selector reg) {
@@ -536,7 +541,24 @@ void cpu::mod (reg_selector src, reg_selector value) {
 }
 
 
-void cpu::cmp (reg_selector a, reg_selector b) {}
+void cpu::cmp (reg_selector a, reg_selector b) {
+  if(a.reg != b.reg)
+    return;
+  switch (a.reg) {
+  case 0:
+    F[REG_EQ] = B[a.index] == B[b.index];
+    F[REG_GT] = B[a.index] >  B[b.index];
+    break;
+  case 1:
+    F[REG_EQ] = C[a.index] == C[b.index];
+    F[REG_GT] = C[a.index] >  C[b.index];
+    break;
+  case 2:
+    F[REG_EQ] = D[a.index] == D[b.index];
+    F[REG_GT] = D[a.index] >  D[b.index];
+    break;
+  }
+}
 
 void cpu::mwb  (reg_selector reg, byte value)         {
   if(reg.reg == 2)

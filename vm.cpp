@@ -26,6 +26,13 @@ void vm::power() {
   for(auto dev : devices) {
     dev->power();
   }
+
+  run = true;
+
+  //"clock"
+  while (run) {
+    tick(); 
+  }
 }
 
 //reset everything

@@ -18,6 +18,8 @@ class vm
   
 public:
   
+  bool run;
+  
   shared_ptr<cpu>  v_cpu;
   shared_ptr<vram> v_ram;
 
