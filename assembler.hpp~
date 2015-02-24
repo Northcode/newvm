@@ -1,0 +1,13 @@
+
+
+
+
+
+
+class assembler
+{
+
+  vector<byte> program;
+  map<string,byte> instruction_set;
+
+};

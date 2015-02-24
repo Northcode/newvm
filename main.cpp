@@ -2,10 +2,6 @@
 #include <vector>
 #include <memory>
 
-// typedef these things because we gonna need them for shorthand, also I like these names
-typedef unsigned char byte;
-typedef unsigned int dword;
-
 // using namespace because im lazy
 // will fix this when vm works
 // refactoring will be lulz :|

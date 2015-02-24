@@ -1,14 +1,3 @@
-union cmp_byte
-{
-  struct {
-    bool eq :1; // value to compare eq flag against
-    bool jeq:1; // wether to compare eq flag
-    bool gt :1; // value to compare gt flag against
-    bool jgt:1; // wether to compare gt flag
-  };
-  byte raw;
-};
-
 //cpu class, emulates cpu. Acts as device
 
 struct cpu : public device
