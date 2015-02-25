@@ -34,5 +34,12 @@ bus::bus() {
 
 void bus::add_port(byte port_num, shared_ptr<data_port> port) {
   ports[port_num] = port;
+}
+
+void send_byte (byte port, byte data) {
+  if (port > BUS_SIZE)
+    return;
+  if (ports[port] == NULL)
+    return;
   
 }

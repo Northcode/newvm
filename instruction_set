@@ -57,3 +57,16 @@ opcode	instruction	arguments	description
 
 34	cmp		reg,reg		compare two registers
 35	ret				return to last caller
+
+36	mwb		reg,byte	write byte to address of register
+37	mwbr		reg,reg		
+38	mwdw		reg,dword	
+39	mwdwr		reg,reg	
+40	mwi		reg,int	
+41	mwir		reg,reg
+
+42	mrb		reg,reg		read byte from memory at address of register
+43	mrdw		reg,reg
+44	mri		reg,reg
+
+
