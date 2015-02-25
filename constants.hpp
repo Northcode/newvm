@@ -22,7 +22,7 @@ constexpr dword PAGE_TABLE_SIZE     = 1024; // 1024 pages (4 KiB) fit in one pag
 constexpr dword PAGE_DIRECTORY_SIZE = 1024; // 1024 page tables (4 KiB) fit in the page directory
 
 constexpr dword MEM_SIZE = 16*1024;
-
+constexpr dword BUS_SIZE = 256;
 
 //structures
 

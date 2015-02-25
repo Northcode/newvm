@@ -44,6 +44,10 @@ struct vstack;
 
 #include "vstack.cpp"
 
+// --- extra devices
+
+
+
 int main(int argc, char* argv[]) {
   string file{"program.dat"};
   if(argc > 1)

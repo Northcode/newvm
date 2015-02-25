@@ -66,7 +66,16 @@ const map<string,instruction> instruction_set = {
   { "div",   { 32, { argtype_reg, argtype_reg }}},
   { "mod",   { 33, { argtype_reg, argtype_reg }}},
   { "cmp",   { 34, { argtype_reg, argtype_reg }}},
-  { "ret",   { 35, { }}}
+  { "ret",   { 35, { }}},
+  { "mwb",   { 36, { argtype_reg, argtype_byte }}},
+  { "mwbr",  { 37, { argtype_reg, argtype_reg }}},
+  { "mwdw",  { 38, { argtype_reg, argtype_dword }}},
+  { "mwdwr", { 39, { argtype_reg, argtype_reg }}},
+  { "mwi",   { 40, { argtype_reg, argtype_int }}},
+  { "mwir",  { 41, { argtype_reg, argtype_reg }}},
+  { "mrb",   { 42, { argtype_reg, argtype_reg }}},
+  { "mrdw",  { 43, { argtype_reg, argtype_reg }}},
+  { "mri",   { 43, { argtype_reg, argtype_reg }}}
 };
 
 const map<char,int> reg_map = {
