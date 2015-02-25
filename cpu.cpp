@@ -7,6 +7,7 @@ cpu::cpu() {
 }
 
 void cpu::tick() {
+  cout << "current IP: " << D[REG_IP] << " ,  ";
   exec_instruction(D[REG_IP]);
   D[REG_IP] += 8;
 }
@@ -17,6 +18,7 @@ void cpu::reset() {}
 
 void cpu::exec_instruction(dword address) {
   byte opcode = memory->read(address);
+  cout << "exec: " << (int)opcode << endl;
   switch (opcode) {
   case 0:
     {
