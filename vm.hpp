@@ -22,6 +22,7 @@ public:
   
   shared_ptr<cpu>  v_cpu;
   shared_ptr<vram> v_ram;
+  shared_ptr<bus> v_bus;
 
   shared_ptr<vstack> stack;
 

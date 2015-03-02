@@ -16,6 +16,7 @@ struct device;
 class  vm;
 struct cpu;
 class  vram;
+struct bus;
 struct vstack;
 
 #include "vm.hpp"
@@ -46,7 +47,7 @@ struct vstack;
 
 // --- extra devices
 
-
+#include "textio.dev.cpp"
 
 int main(int argc, char* argv[]) {
   string file{"program.dat"};
@@ -54,20 +55,23 @@ int main(int argc, char* argv[]) {
     file = string(argv[1]);
 
   vm _vm{};
+
+  _vm.v_bus->add_port(0, make_shared<text_io_port>());
   
   ifstream inputfile{file,ios::binary};
 
   auto buf = vector<char>(istreambuf_iterator<char>(inputfile),istreambuf_iterator<char>());
 
   for (int i = 0; i < buf.size(); i++) {
-    cout << (int)buf[i] << " ";
+    //cout << (int)buf[i] << " ";
     _vm.v_ram->write(i,buf[i]);
   }
 
-  cout << endl;
+  //cout << endl;
 
   _vm.power();
 
+  /*
   cout << "register B: ";
   for (auto r : _vm.v_cpu->B)
     cout << (int)r << ", ";
@@ -75,4 +79,5 @@ int main(int argc, char* argv[]) {
   for (auto d : _vm.v_cpu->D)
     cout << (int)d << ", ";
   cout << endl;
+  */
 }

@@ -1,0 +1,12 @@
+struct text_io_port : public data_port
+{
+  void  send      (byte  value); 
+  void  send      (dword value); 
+  void  send      (int   value); 
+  
+  byte  get_byte  (); 
+  dword get_dword (); 
+  int   get_int   (); 
+};
+
+void send

@@ -7,7 +7,7 @@ cpu::cpu() {
 }
 
 void cpu::tick() {
-  cout << "current IP: " << D[REG_IP] << " ,  ";
+  //cout << "current IP: " << D[REG_IP] << " ,  ";
   exec_instruction(D[REG_IP]);
   D[REG_IP] += 8;
 }
@@ -18,7 +18,7 @@ void cpu::reset() {}
 
 void cpu::exec_instruction(dword address) {
   byte opcode = memory->read(address);
-  cout << "exec: " << (int)opcode << endl;
+  //cout << "exec: " << (int)opcode << endl;
   switch (opcode) {
   case 0:
     {
@@ -445,10 +445,16 @@ void cpu::stack_pop_int   (reg_selector reg) {
 }
 
 void  cpu::out_byte  (byte port, byte value)       {
-  
+  machine->v_bus->send_byte(port,value);
 }
 
-void  cpu::out_byte  (byte port, reg_selector reg) {}
+void  cpu::out_byte  (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 0:
+    out_byte(port, B[reg.index]);
+    break;
+  }
+}
 
 void  cpu::out_dword (byte port, dword value)      {}
 

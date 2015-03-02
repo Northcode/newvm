@@ -4,14 +4,17 @@ vm::vm() {
 
   v_cpu = make_shared<cpu>  ();
   v_ram = make_shared<vram> ();
+  v_bus = make_shared<bus>  ();
 
   v_cpu->memory = v_ram;
   v_cpu->machine = this;
+  v_bus->machine = this;
 
   stack = make_shared<vstack>(v_cpu,v_ram);
 
   devices.push_back(v_cpu);
   devices.push_back(v_ram);
+  devices.push_back(v_bus);
 }
 
 //loop through devices and tick each one
