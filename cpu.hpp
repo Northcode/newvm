@@ -23,14 +23,14 @@ struct cpu : public device
   // register instructions
   void mv  (reg_selector src, reg_selector dest);
   void ld  (reg_selector dest, byte  value);
-  void ld  (reg_selector dest, dword value);
+  void ld  (reg_selector dest, addressing_mode mode, dword value);
   void ld  (reg_selector dest, int   value);
   void cl  (reg_selector dest);
 
   // jumping
-  void jmp        (dword address);
+  void jmp        (addressing_mode mode, dword address);
   void jmp        (reg_selector reg);
-  void call       (dword address);
+  void call       (addressing_mode mode, dword address);
   void call       (reg_selector reg);
   void interupt   (byte index);
   void ret        ();

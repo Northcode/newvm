@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <map>
@@ -7,10 +6,11 @@
 #include <fstream>
 #include <sstream>
 
+using namespace std;
+
 #include "constants.hpp"
 #include "registers.hpp"
 
-using namespace std;
 
 enum argtype
   {
@@ -18,7 +18,8 @@ enum argtype
     argtype_byte,
     argtype_dword,
     argtype_int,
-    argtype_cmp
+    argtype_cmp,
+    argtype_adrmd
   };
 
 struct instruction
@@ -34,12 +35,12 @@ const map<string,instruction> instruction_set = {
   { "exit",  { 0,  {} } },
   { "mv" ,   { 1,  { argtype_reg, argtype_reg   }}},
   { "ldb",   { 2,  { argtype_reg, argtype_byte  }}},
-  { "lddw",  { 3,  { argtype_reg, argtype_dword }}},
+  { "lddw",  { 3,  { argtype_reg, argtype_adrmd, argtype_dword }}},
   { "ldi",   { 4,  { argtype_reg, argtype_int   }}},
   { "cl",    { 5,  { argtype_reg }}},
-  { "jmpd",  { 6,  { argtype_dword }}},
+  { "jmpd",  { 6,  { argtype_adrmd, argtype_dword }}},
   { "jmpr",  { 7,  { argtype_reg }}},
-  { "calld", { 8,  { argtype_dword }}},
+  { "calld", { 8,  { argtype_adrmd, argtype_dword }}},
   { "callr", { 9,  { argtype_reg }}},
   { "int",   { 10, { argtype_dword }}},
   { "cjmpd", { 11, { argtype_cmp, argtype_dword }}},
@@ -93,6 +94,9 @@ const map<char,int> reg_map = {
 struct assembler
 {
   vector<byte> program;
+
+  map<string,int> lbls;
+  vector<tuple<int,string>> jmps;
   
   string code;
 
