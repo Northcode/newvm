@@ -1,3 +1,6 @@
 lddw D0 NL+ 5
 outdwr 0 D0
 exit
+
+lol: 
+db 'Hello World'

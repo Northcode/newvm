@@ -49,6 +49,13 @@ void assembler::parse_line(string line) {
   itr++;
   //cout << ins << " : " << matchcount << " - " << instruction_set.count(ins) << endl;
 
+  regex label_regex{"([a-zA-Z]+)\\:"};
+  smatch label;
+  if(regex_match(ins,label,label_regex)) {
+    cout << label[1].str() << endl;
+    lbls.
+  }
+
   int ia = 0;
 
   if(instruction_set.count(ins) > 0) {
@@ -76,13 +83,15 @@ void assembler::parse_line(string line) {
 	byte b = (byte)stoi(match);
 	program.push_back(b); ia++;
       } else if (arg == argtype_dword) {
-	regex str_regex{"\\w+"};
+	regex str_regex{"([a-zA-Z]+)"};
 	if(regex_match(match,str_regex)) // check for label (is this a string?)
-	  { jmps.push_back(tuple<int,string>{ia,match}); }
+	  jmps.push_back(tuple<int,string>{ia,match});
 	else {  
-	dword d = (dword)stoi(match);
-	for (byte b : dword_to_bytes(d))
-	  { program.push_back(b); ia++; }
+	  
+	  dword d = (dword)stoi(match);
+	  for (byte b : dword_to_bytes(d))
+	    { program.push_back(b); ia++; }
+	  
 	}
       } else if (arg == argtype_int) {
 	int i = stoi(match);
@@ -119,13 +128,10 @@ void assembler::parse_line(string line) {
 	else
 	  { cout << "could not match relative address: " << offset_register << endl; return; }
 
-	cout << "Dindex: " << (int)adrmd.Dindex << endl;
-
 	adrmd.negate = m[2].str().compare("-") == 0;
-	cout << (int)adrmd.raw << endl;
+	//cout << (int)adrmd.raw << endl;
 	program.push_back(adrmd.raw); ia++;
       }
-      //cout << endl;
       
       itr++;
     }

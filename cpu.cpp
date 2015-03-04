@@ -475,17 +475,53 @@ void  cpu::out_byte  (byte port, reg_selector reg) {
   }
 }
 
-void  cpu::out_dword (byte port, dword value)      {}
+void  cpu::out_dword (byte port, dword value)      {
+  machine->v_bus->send_dword(port,value);
+}
 
-void  cpu::out_dword (byte port, reg_selector reg) {}
+void  cpu::out_dword (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 2:
+    out_dword(port, D[reg.index]);
+    break;
+  }
+}
 
-void  cpu::out_int   (byte port, int value)        {}
+void  cpu::out_int   (byte port, int value)        {
+  machine->v_bus->send_int(port,value);
+}
 
-void  cpu::out_int   (byte port, reg_selector reg) {}
+void  cpu::out_int   (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 1:
+    out_int(port, C[reg.index]);
+    break;
+  }
+}
 
-void  cpu::in_byte   (byte port, reg_selector reg) {  }
-void  cpu::in_dword  (byte port, reg_selector reg) {  }
-void  cpu::in_int    (byte port, reg_selector reg) {  }
+void  cpu::in_byte   (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 0:
+    B[reg.index] = machine->v_bus->get_byte(port);
+    break;
+  }
+}
+
+void  cpu::in_dword  (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 2:
+    D[reg.index] = machine->v_bus->get_dword(port);
+    break;
+  }
+}
+
+void  cpu::in_int    (byte port, reg_selector reg) {
+  switch (reg.reg) {
+  case 1:
+    C[reg.index] = machine->v_bus->get_dword(port);
+    break;
+  }
+}
 
 void cpu::add (reg_selector src, reg_selector value) {
   if(src.reg != value.reg)

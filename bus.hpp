@@ -6,9 +6,9 @@ struct data_port
   virtual void  send      (dword value) {}
   virtual void  send      (int   value) {}
 
-  virtual byte  get_byte  () {}
-  virtual dword get_dword () {}
-  virtual int   get_int   () {}
+  virtual byte  get_byte  () {return 0;}
+  virtual dword get_dword () {return 0;}
+  virtual int   get_int   () {return 0;}
 };
 
 // data bus
@@ -58,3 +58,23 @@ void bus::send_int (byte port, int data) {
   if (check_port(port))
     ports[port]->send(data);
 }
+
+byte bus::get_byte (byte port) {
+  if(check_port(port))
+    return ports[port]->get_byte();
+  return 0;
+}
+
+dword bus::get_dword (byte port) {
+  if(check_port(port))
+    return ports[port]->get_dword();
+  return 0;
+}
+
+int bus::get_int (byte port) {
+  if(check_port(port))
+    return ports[port]->get_int();
+  return 0;
+}
+
+
