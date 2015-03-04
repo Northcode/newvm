@@ -42,7 +42,7 @@ union addressing_mode
   struct {
     byte Dindex:4;
     bool negate:1;
-    byte padding:3;
+    bool no_reg:1;
   };
   byte raw;
 };

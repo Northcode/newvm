@@ -13,25 +13,26 @@ sizes of different things:
   byte: 1 byte
   dword: 4 bytes
   int: 4 bytes
+  adrm: 1 byte (4 bits index, 1 bit negate, 1 bit ignore, 2 bits padding)
 
 opcode	instruction	arguments	description
 1	mv		reg, reg	copy value from one register to another
 2	ldb		reg, byte	load byte into register
-3	lddw		reg, dword	load dword into register
+3	lddw		reg, adrm,dword	load dword into register
 4	ldi		reg, int	load int into register
 5	cl		reg  		clear register
 
-6	jmpd		dword		jump to address
+6	jmpd		adrm,dword	jump to address
 7	jmpr		reg		jump to address specified by register
-8	calld		dword		call address
+8	calld		adrm,dword	call address
 9	callr		reg		call address specified by register
 10	int		byte		call interupt
-11	cjmpd		bool,bool,dword	conditional jump to address
-12	cjmpr		bool,bool,reg	conditional jump to reg address
+11	cjmpd		cop, adrm,dword	conditional jump to address
+12	cjmpr		cop,reg		conditional jump to reg address
 
 13	pushr		reg		push value of register to stack
 14	pushb		byte		push byte to stack
-15	pushdw		dword		push dword to stack
+15	pushdw		adrm,dword	push dword to stack
 16	pushi		int		push int to stack
 
 17	popb		reg		pop byte from stack to register
@@ -40,7 +41,7 @@ opcode	instruction	arguments	description
 
 20	outb		byte,byte	send byte to port
 21	outbr		byte,reg	send byte from reg to port
-22	outdw		byte,dword	send dword to port
+22	outdw		byte,adrm,dword	send dword to port
 23	outdwr		byte,reg	send dword from reg to port
 24	outi		byte,int	send int to port
 25	outir		byte,reg	send int from reg to port
@@ -60,7 +61,7 @@ opcode	instruction	arguments	description
 
 36	mwb		reg,byte	write byte to address of register
 37	mwbr		reg,reg		
-38	mwdw		reg,dword	
+38	mwdw		reg,adrm,dword	
 39	mwdwr		reg,reg	
 40	mwi		reg,int	
 41	mwir		reg,reg

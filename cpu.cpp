@@ -16,6 +16,11 @@ void cpu::power() {}
 
 void cpu::reset() {}
 
+dword cpu::offset_address(addressing_mode adrm, dword address) {
+  if(adrm.no_reg) { return address; }
+  return D[adrm.Dindex] + (adrm.negate ? -1 : 1) + address;
+}
+
 void cpu::exec_instruction(dword address) {
   byte opcode = memory->read(address);
   //cout << "exec: " << (int)opcode << endl;
@@ -43,8 +48,10 @@ void cpu::exec_instruction(dword address) {
     {
       reg_selector regdst;
       regdst.raw = memory->read(address + 1);
-      dword value = memory->read_dword(address + 2);
-      ld(regdst,value);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 2);
+      dword value = memory->read_dword(address + 3);
+      ld(regdst,offset_address(adrm,value));
     } break;
   case 4:
     {
@@ -61,8 +68,10 @@ void cpu::exec_instruction(dword address) {
     } break;
   case 6:
     {
-      dword addr = memory->read_dword(address + 1);
-      jmp(addr);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 1);
+      dword addr = memory->read_dword(address + 2);
+      jmp(offset_address(adrm,addr));
     } break;
   case 7:
     {
@@ -72,8 +81,10 @@ void cpu::exec_instruction(dword address) {
     } break;
   case 8:
     {
-      dword addr = memory->read_dword(address + 1);
-      call(addr);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 1);
+      dword addr = memory->read_dword(address + 2);
+      call(offset_address(adrm,addr));
     } break;
   case 9:
     {
@@ -94,8 +105,10 @@ void cpu::exec_instruction(dword address) {
     {
       cmp_byte byt;
       byt.raw = memory->read(address+1);
-      dword addr = memory->read_dword(address+2);
-      cjmp(byt,addr);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address+2);
+      dword addr = memory->read_dword(address+3);
+      cjmp(byt,offset_address(adrm,addr));
     } break;
   case 12:
     {
@@ -118,8 +131,10 @@ void cpu::exec_instruction(dword address) {
     } break;
   case 15:
     {
-      dword value = memory->read_dword(address + 1);
-      stack_push(value);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 1);
+      dword value = memory->read_dword(address + 2);
+      stack_push(offset_address(adrm,value));
     } break;
   case 16:
     {
@@ -160,8 +175,10 @@ void cpu::exec_instruction(dword address) {
   case 22:
     {
       byte port = memory->read(address + 1);
-      dword data = memory->read_dword(address + 2);
-      out_dword(port,data);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 2);
+      dword data = memory->read_dword(address + 3);
+      out_dword(port,offset_address(adrm,data));
     } break;
   case 23:
     {
@@ -271,8 +288,10 @@ void cpu::exec_instruction(dword address) {
     {
       reg_selector reg;
       reg.raw = memory->read(address + 1);
-      dword value = memory->read(address + 2);
-      mwdw(reg,value);
+      addressing_mode adrm;
+      adrm.raw = memory->read(address + 2);
+      dword value = memory->read(address + 3);
+      mwdw(reg,offset_address(adrm,value));
     } break;
   case 39:
     {

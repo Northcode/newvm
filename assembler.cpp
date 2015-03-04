@@ -101,22 +101,23 @@ void assembler::parse_line(string line) {
 	//cout << (cmp.jeq ? "E" : "N" ) << (cmp.eq ? "T" : "F") << (cmp.jgt ? "G" : "N" ) << (cmp.gt ? "T" : "F") << endl;
 	program.push_back(cmp.raw); ia++;
       } else if (arg == argtype_adrmd) {
-	cout << "addressing mode: " << match << endl;
 	regex adrmd_regex{"(\\w\\w)([\\+\\-])"};
 	smatch m;
 	if(!regex_match(match,m,adrmd_regex)) { cout << "not an addressing mode" << endl; return; }
+	
 	addressing_mode adrmd;
-	adrmd.raw = 0;
-	if(m[1].str().compare("SP"))
+	
+	string offset_register{m[1].str()};
+	if       (!offset_register.compare("SP"))
 	  adrmd.Dindex = REG_SP;
-	else if (m[1].str().compare("BP"))
+	else if (!offset_register.compare("BP"))
 	  adrmd.Dindex = REG_BP;
-	else if (m[1].str().compare("IP"))
+	else if (!offset_register.compare("IP"))
 	  adrmd.Dindex = REG_IP;
-	else if (m[1].str().compare("NL"))
-	  adrmd.padding = 1;
+	else if (!offset_register.compare("NL"))
+	  adrmd.no_reg = true;
 	else
-	  { cout << "could not match relative address: " << m[1].str() << endl; return; }
+	  { cout << "could not match relative address: " << offset_register << endl; return; }
 
 	cout << "Dindex: " << (int)adrmd.Dindex << endl;
 
