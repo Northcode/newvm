@@ -76,7 +76,7 @@ const map<string,instruction> instruction_set = {
   { "mwir",  { 41, { argtype_reg, argtype_reg }}},
   { "mrb",   { 42, { argtype_reg, argtype_reg }}},
   { "mrdw",  { 43, { argtype_reg, argtype_reg }}},
-  { "mri",   { 43, { argtype_reg, argtype_reg }}}
+  { "mri",   { 43, { argtype_reg, argtype_reg }}}, 
 };
 
 const map<char,int> reg_map = {

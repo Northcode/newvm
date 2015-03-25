@@ -21,16 +21,53 @@ void assembler::parse_all() {
   }
   
   cout << "second pass..." << endl;
-  // second pass: fix labels
+  // --- second pass: fix labels
+
+  // iterate through all label references
   for(auto jmp : jmps) {
-    if(lbls.count(get<1>(jmp)) > 0) {
-      dword address = lbls.at(get<1>(jmp));
+
+    string referenced = get<1>(jmp);
+    dword refip = get<0>(jmp);
+    
+    // check that the label exists
+    if(lbls.count(referenced) > 0) {
+
+      // get absolute address we are referencing
+      dword address = lbls.at(referenced);
+      dword ipaddress = address - address % 8; // get the address of the instruction (nearest lower multiple of 8)
+
+      // check what addressing mode we are using
+      addressing_mode adr_mode;
+      adr_mode.raw = program.at(refip - 1);
+
+      // if addressing_mode is IP relative
+      if(adr_mode.no_reg == false && adr_mode.Dindex == REG_IP) {
+	//lblip - refip
+	if (address > refip) { //address is ahead of ip
+	  adr_mode.negate = false;
+	  address = address - refip;
+	} else { //address is behind
+	  adr_mode.negate = true;
+	  address = refip - address;
+	}
+	program[refip - 1] = adr_mode.raw;
+      }
+      
       int i = 0;
-      for(auto b : dword_to_bytes(address))
-	{ program[get<0>(jmp) + i] = b; i++; }
-    }
+
+      for(auto b : dword_to_bytes(address)) { 
+	program[refip + i] = b; 
+	i++; 
+      }
+
+    } else
+      cout << "Call to label: " << referenced  << ", is an undefined reference" << endl;
   }
 
+}
+
+vector<string> take(vector<string> vec,int amount) {
+  return vector<string>(vec.begin() + amount, vec.end());
 }
 
 void assembler::parse_line(string line) {
@@ -52,8 +89,8 @@ void assembler::parse_line(string line) {
   regex label_regex{"([a-zA-Z]+)\\:"};
   smatch label;
   if(regex_match(ins,label,label_regex)) {
-    cout << label[1].str() << endl;
-    lbls.
+    //cout << label[1].str() << " : " << program.size() << endl;
+    lbls[label[1].str()] = program.size();
   }
 
   int ia = 0;
@@ -115,9 +152,10 @@ void assembler::parse_line(string line) {
 	if(!regex_match(match,m,adrmd_regex)) { cout << "not an addressing mode" << endl; return; }
 	
 	addressing_mode adrmd;
+	adrmd.raw = 0;
 	
 	string offset_register{m[1].str()};
-	if       (!offset_register.compare("SP"))
+	if      (!offset_register.compare("SP"))
 	  adrmd.Dindex = REG_SP;
 	else if (!offset_register.compare("BP"))
 	  adrmd.Dindex = REG_BP;
@@ -129,12 +167,27 @@ void assembler::parse_line(string line) {
 	  { cout << "could not match relative address: " << offset_register << endl; return; }
 
 	adrmd.negate = m[2].str().compare("-") == 0;
-	//cout << (int)adrmd.raw << endl;
 	program.push_back(adrmd.raw); ia++;
       }
       
       itr++;
     }
+  } else if (!ins.compare("db")) {
+    
+    line = string(line.begin() + 3, line.end());
+    vector<string> params;
+    vector<char>   stringbuilder;
+
+    bool escaped = false;
+    bool quotes = false;
+    for (auto c : line) {
+      if(!quotes  && c == ' ') { params.push_back({stringbuilder.begin(),stringbuilder.end()}); continue; }
+      if(!escaped && c == '"') { params.push_back({stringbuilder.begin(),stringbuilder.end()}); stringbuilder.clear(); continue; }
+      if(!escaped && c == '\\') escaped = true;
+      stringbuilder.push_back(c);
+      escaped = false;
+    }
+
   }
 
   while (ia < 8) {

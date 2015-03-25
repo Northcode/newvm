@@ -43,6 +43,7 @@ union addressing_mode
     byte Dindex:4;
     bool negate:1;
     bool no_reg:1;
+    byte pad:2;
   };
   byte raw;
 };
