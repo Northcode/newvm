@@ -1,5 +1,6 @@
 lddw D0 NL+ lol
-outdwr 0 D0
+mrb B0, D0
+outbr 0, B0
 exit
 
 lol: 

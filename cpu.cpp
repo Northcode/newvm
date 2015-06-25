@@ -7,7 +7,7 @@ cpu::cpu() {
 }
 
 void cpu::tick() {
-  //cout << "current IP: " << D[REG_IP] << " ,  ";
+  cout << "current IP: " << D[REG_IP] << " ,  ";
   exec_instruction(D[REG_IP]);
   D[REG_IP] += 8;
 }
@@ -23,14 +23,18 @@ dword cpu::offset_address(addressing_mode adrm, dword address) {
 
 void cpu::exec_instruction(dword address) {
   byte opcode = memory->read(address);
-  //cout << "exec: " << (int)opcode << endl;
+  cout << "exec: " << (int)opcode << endl;
+  cout << "IP: " << D[REG_IP] << endl;
   switch (opcode) {
   case 0:
     {
+      std::cout << "exit" << std::endl;
       machine->run = false;
-    }
+    } break;
   case 1:
     {
+      std::cout << D[REG_IP] << std::endl;
+      std::cout << "emv" << std::endl;
       reg_selector regsrc;
       regsrc.raw = memory->read(address + 1);
       reg_selector regdst;
@@ -344,6 +348,7 @@ void cpu::exec_instruction(dword address) {
 }
 
 void cpu::mv  (reg_selector src, reg_selector dest) {
+  std::cout << "mv" << std::endl;
   if(src.reg != dest.reg)
     return;
   switch (dest.reg) {
@@ -363,21 +368,25 @@ void cpu::mv  (reg_selector src, reg_selector dest) {
 }
 
 void cpu::ld  (reg_selector dest, byte  value)      {
+  std::cout << "ld" << std::endl;
   if(dest.reg == 0)
     B[dest.index] = value;
 }
 
 void cpu::ld  (reg_selector dest, dword value)      {
+  std::cout << "ld" << std::endl;
   if(dest.reg == 2)
     D[dest.index] = value;
 }
 
 void cpu::ld  (reg_selector dest, int   value)      {
+  std::cout << "ld" << std::endl;
   if(dest.reg == 1)
     C[dest.index] = value;
 }
 
 void cpu::cl  (reg_selector dest)                   {
+  std::cout << "ld" << std::endl;
   if      (dest.reg == 0)
     B[dest.index] = 0;
   else if (dest.reg == 1)
@@ -468,6 +477,7 @@ void  cpu::out_byte  (byte port, byte value)       {
 }
 
 void  cpu::out_byte  (byte port, reg_selector reg) {
+  std::cout << "outbr" << std::endl;
   switch (reg.reg) {
   case 0:
     out_byte(port, B[reg.index]);
@@ -476,6 +486,7 @@ void  cpu::out_byte  (byte port, reg_selector reg) {
 }
 
 void  cpu::out_dword (byte port, dword value)      {
+  std::cout << "outdw" << std::endl;
   machine->v_bus->send_dword(port,value);
 }
 
